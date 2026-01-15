@@ -2,7 +2,6 @@ package LPDataAcces.LPDTOs;
 
 public class LPAlimentoDTO {
     private Integer IdAlimento;
-
     private Integer IdAlimentoTipo;
     private String Nombre;
     private String FechaCreacion;

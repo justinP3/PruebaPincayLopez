@@ -7,15 +7,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.Set;
 
 import LPBusinessLogic.LPInterfaces.LPIEntomologo;
-import LPDataAcces.LPDAOs.LPAlimentoTipoDAO;
+import LPDataAcces.LPDAOs.LPAlimentoDAO;
 import LPDataAcces.LPDAOs.LPHormigaDAO;
-import LPDataAcces.LPDTOs.LPAlimentoTipoDTO;
+import LPDataAcces.LPDTOs.LPAlimentoDTO;
 import LPDataAcces.LPDTOs.LPHormigaDTO;
 import LPInfrastructure.LPAppException;
 
@@ -84,7 +85,8 @@ public class LPEntomologo implements LPIEntomologo {
         LPHormigaDAO hormigaDAO = new LPHormigaDAO();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String fechaActual = LocalDateTime.now().format(formatter);
-        Random random = new Random();
+
+        Map<String, Integer> contadores = new HashMap<>();
 
         System.out.println("\n[+] Guardando hormigas en la base de datos...");
 
@@ -95,7 +97,10 @@ public class LPEntomologo implements LPIEntomologo {
                 int idTipo = tipoHormiga.equals("HReina") ? 5 : 1;
                 hormiga.setIdHormigaTipo(idTipo);
 
-                String nombreUnico = tipoHormiga + "-" + (1000 + random.nextInt(9000));
+                int contadorActual = contadores.getOrDefault(tipoHormiga, 0) + 1;
+                contadores.put(tipoHormiga, contadorActual);
+
+                String nombreUnico = tipoHormiga + "-" + contadorActual;
                 hormiga.setNombre(nombreUnico);
 
                 hormiga.setIdSexo(1);
@@ -171,17 +176,40 @@ public class LPEntomologo implements LPIEntomologo {
             return;
         }
 
-        LPAlimentoTipoDAO alimentoDAO = new LPAlimentoTipoDAO();
+        LPAlimentoDAO alimentoDAO = new LPAlimentoDAO();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String fechaActual = LocalDateTime.now().format(formatter);
+
+        Map<String, Integer> contadores = new HashMap<>();
 
         System.out.println("\n[+] Guardando alimentos en la base de datos...");
 
         for (String tipoAlimento : alimentosValidos) {
             try {
-                LPAlimentoTipoDTO alimento = new LPAlimentoTipoDTO();
+                LPAlimentoDTO alimento = new LPAlimentoDTO();
+                int idTipo = 0;
 
-                alimento.setNombre(tipoAlimento);
+                if (tipoAlimento.equals("Nectarívoros"))
+                    idTipo = 1;
+                else if (tipoAlimento.equals("Carnívoro"))
+                    idTipo = 2;
+                else if (tipoAlimento.equals("Omnívoro"))
+                    idTipo = 3;
+                else if (tipoAlimento.equals("Insectívoro"))
+                    idTipo = 4;
+                else if (tipoAlimento.equals("Herbívoro"))
+                    idTipo = 5;
+                else
+                    continue;
+
+                alimento.setIdAlimentoTipo(idTipo);
+
+                int contadorActual = contadores.getOrDefault(tipoAlimento, 0) + 1;
+                contadores.put(tipoAlimento, contadorActual);
+
+                String nombreUnico = tipoAlimento + "-" + contadorActual;
+                alimento.setNombre(nombreUnico);
+
                 alimento.setFechaCreacion(fechaActual);
                 alimento.setFechaModifica(fechaActual);
 
@@ -202,26 +230,38 @@ public class LPEntomologo implements LPIEntomologo {
         }
 
         try {
-            LPAlimentoTipoDAO alimentoDAO = new LPAlimentoTipoDAO();
+            LPAlimentoDAO alimentoDAO = new LPAlimentoDAO();
+            int idTipoBuscado = 0;
 
-            List<LPAlimentoTipoDTO> alimentos = alimentoDAO.readAll();
+            if (tipoAlimento.equals("Nectarívoros"))
+                idTipoBuscado = 1;
+            else if (tipoAlimento.equals("Carnívoro"))
+                idTipoBuscado = 2;
+            else if (tipoAlimento.equals("Omnívoro"))
+                idTipoBuscado = 3;
+            else if (tipoAlimento.equals("Insectívoro"))
+                idTipoBuscado = 4;
+            else if (tipoAlimento.equals("Herbívoro"))
+                idTipoBuscado = 5;
 
-            LPAlimentoTipoDTO alimentoAEliminar = null;
-            for (LPAlimentoTipoDTO alimento : alimentos) {
-                if (alimento.getNombre().equals(tipoAlimento)) {
+            List<LPAlimentoDTO> alimentos = alimentoDAO.readAll();
+
+            LPAlimentoDTO alimentoAEliminar = null;
+            for (LPAlimentoDTO alimento : alimentos) {
+                if (alimento.getIdAlimentoTipo() == idTipoBuscado) {
                     alimentoAEliminar = alimento;
                     break;
                 }
             }
 
             if (alimentoAEliminar == null) {
-                System.out.println("Alimento no encontrado: " + tipoAlimento);
+                System.out.println("No queda comida disponible de tipo: " + tipoAlimento);
                 return;
             }
 
-            alimentoDAO.delete(alimentoAEliminar.getIdAlimentoTipo());
+            alimentoDAO.delete(alimentoAEliminar.getIdAlimento());
 
-            System.out.println(azul + "[Preparado y eliminado]: " + tipoAlimento);
+            System.out.println(azul + "[Preparado y consumido]: " + alimentoAEliminar.getNombre());
 
         } catch (LPAppException e) {
             System.out.println("Error al preparar alimento: " + e.getMessage());

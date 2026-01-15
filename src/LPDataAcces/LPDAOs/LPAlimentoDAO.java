@@ -6,6 +6,7 @@ import LPInfrastructure.*;
 
 public class LPAlimentoDAO extends LPDataHelperSQLiteDAO<LPAlimentoDTO> {
     public LPAlimentoDAO() throws LPAppException {
-        super(LPAlimentoDTO.class, "LPAlimento", "IdAlimentoTipo");
+
+        super(LPAlimentoDTO.class, "LPAlimento", "IdAlimento");
     }
 }
