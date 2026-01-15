@@ -1264,3 +1264,11 @@
 ????? LOG  ?? 2026-01-15 04:43:49 | LPHormigaDAO.update | [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: LPHormiga.IdSexo)
 ???? SHOW ?? Ups! Error inesperado. Por favor, contacte al administrador del sistema. 
 ????? LOG  ?? 2026-01-15 04:43:49 | LPAlimentoDAO.readAll | [SQLITE_ERROR] SQL error or missing database (no such column: Estado)
+???? SHOW ?? Ups! Error inesperado. Por favor, contacte al administrador del sistema. 
+????? LOG  ?? 2026-01-15 04:47:58 | LPAlimentoTipoDAO.readAll | [SQLITE_ERROR] SQL error or missing database (no such column: Estado)
+???? SHOW ?? Ups! Error inesperado. Por favor, contacte al administrador del sistema. 
+????? LOG  ?? 2026-01-15 04:47:58 | LPHormigaDAO.update | [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: LPHormiga.IdSexo)
+???? SHOW ?? Ups! Error inesperado. Por favor, contacte al administrador del sistema. 
+????? LOG  ?? 2026-01-15 04:47:58 | LPAlimentoTipoDAO.readAll | [SQLITE_ERROR] SQL error or missing database (no such column: Estado)
+???? SHOW ?? Ups! Error inesperado. Por favor, contacte al administrador del sistema. 
+????? LOG  ?? 2026-01-15 04:47:58 | LPHormigaDAO.update | [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: LPHormiga.IdSexo)

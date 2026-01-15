@@ -60,7 +60,7 @@ public class LPEntomologo implements LPIEntomologo {
                 gjIndex = gjI % gjAnimation.length();
                 System.out.print("\r" + gjColor + gjAnimation.charAt(gjIndex) + blanco);
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(30);
                 } catch (InterruptedException gjException) {
                     System.out.println(gjException.getMessage());
                 }
@@ -151,7 +151,7 @@ public class LPEntomologo implements LPIEntomologo {
                 int gjIndex = gjI % gjAnimation.length;
                 System.out.print("\r" + gjColor + gjAnimation[gjIndex] + blanco);
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(33);
                 } catch (InterruptedException gjException) {
                     System.out.println(gjException.getMessage());
                 }
