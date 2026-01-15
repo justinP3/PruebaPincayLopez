@@ -1,14 +1,15 @@
 package LPBusinessLogic.LPEntities;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import LPBusinessLogic.LPInterfaces.LPIEntomologo;
@@ -32,7 +33,10 @@ public class LPEntomologo implements LPIEntomologo {
         List<String> hormigasValidas = new ArrayList<>();
         List<String> todosLosDatos = new ArrayList<>();
         System.out.println("[+] Hormigas");
-        try (BufferedReader reader = new BufferedReader(new FileReader("LPstorage\\LPDataFiles\\LPAntNest.txt"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new java.io.InputStreamReader(
+                        new java.io.FileInputStream("LPstorage\\LPDataFiles\\LPAntNest.txt"),
+                        StandardCharsets.UTF_8))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] elementos = linea.split(",");
@@ -71,7 +75,7 @@ public class LPEntomologo implements LPIEntomologo {
         return hormigasValidas;
     }
 
-    public void LPguardarAlimentoEnBD(List<String> hormigasValidas) throws LPAppException {
+    public void LPguardarHormigasEnBD(List<String> hormigasValidas) throws LPAppException {
         if (hormigasValidas == null || hormigasValidas.isEmpty()) {
             System.out.println("\n" + rojo + "No hay hormigas válidas para guardar" + blanco);
             return;
@@ -80,6 +84,7 @@ public class LPEntomologo implements LPIEntomologo {
         LPHormigaDAO hormigaDAO = new LPHormigaDAO();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String fechaActual = LocalDateTime.now().format(formatter);
+        Random random = new Random();
 
         System.out.println("\n[+] Guardando hormigas en la base de datos...");
 
@@ -87,20 +92,20 @@ public class LPEntomologo implements LPIEntomologo {
             try {
                 LPHormigaDTO hormiga = new LPHormigaDTO();
 
-                // Asignar tipo de hormiga (5 para HReina, 1 para HLarva)
                 int idTipo = tipoHormiga.equals("HReina") ? 5 : 1;
                 hormiga.setIdHormigaTipo(idTipo);
 
-                // Valores por defecto
+                String nombreUnico = tipoHormiga + "-" + (1000 + random.nextInt(9000));
+                hormiga.setNombre(nombreUnico);
+
                 hormiga.setIdSexo(1);
                 hormiga.setIdEstado(1);
-                hormiga.setNombre(tipoHormiga);
                 hormiga.setEstado("A");
                 hormiga.setFechaCreacion(fechaActual);
                 hormiga.setFechaModifica(fechaActual);
 
-                // Guardar en base de datos
                 hormigaDAO.create(hormiga);
+                System.out.println("  -> Hormiga guardada: " + nombreUnico);
 
             } catch (LPAppException e) {
                 System.out.println("Error al guardar " + tipoHormiga + ": " + e.getMessage());
@@ -114,10 +119,12 @@ public class LPEntomologo implements LPIEntomologo {
 
         System.out.println("[+] Alimentos");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("LPstorage\\LPDataFiles\\LPAntFood.txt"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new java.io.InputStreamReader(
+                        new java.io.FileInputStream("LPstorage\\LPDataFiles\\LPAntFood.txt"),
+                        StandardCharsets.UTF_8))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
-                // Separar por guiones y procesar cada elemento
                 String[] elementos = linea.split("-");
                 for (String elemento : elementos) {
                     String elementoLimpio = elemento.trim();
@@ -131,10 +138,9 @@ public class LPEntomologo implements LPIEntomologo {
             return alimentosValidos;
         }
 
-        // Procesar y mostrar cada dato con el spinner de espera
         for (String dato : todosLosDatos) {
             String gjColor = rojo;
-            String[] gjAnimation = { "o0o", "0o0", "o0o", "0o0" }; // Ida y vuelta
+            String[] gjAnimation = { "o0o", "0o0", "o0o", "0o0" };
 
             for (int gjI = 0; gjI <= 100; gjI++) {
                 int gjIndex = gjI % gjAnimation.length;
@@ -159,7 +165,7 @@ public class LPEntomologo implements LPIEntomologo {
         return alimentosValidos;
     }
 
-    public void LPguardarHormigasEnBD(List<String> alimentosValidos) throws LPAppException {
+    public void LPguardarAlimentoEnBD(List<String> alimentosValidos) throws LPAppException {
         if (alimentosValidos == null || alimentosValidos.isEmpty()) {
             System.out.println("No hay alimentos válidos para guardar");
             return;
@@ -179,7 +185,6 @@ public class LPEntomologo implements LPIEntomologo {
                 alimento.setFechaCreacion(fechaActual);
                 alimento.setFechaModifica(fechaActual);
 
-                // Guardar en base de datos
                 alimentoDAO.create(alimento);
 
             } catch (LPAppException e) {
@@ -199,7 +204,6 @@ public class LPEntomologo implements LPIEntomologo {
         try {
             LPAlimentoTipoDAO alimentoDAO = new LPAlimentoTipoDAO();
 
-            // Obtener todos los alimentos para encontrar el ID
             List<LPAlimentoTipoDTO> alimentos = alimentoDAO.readAll();
 
             LPAlimentoTipoDTO alimentoAEliminar = null;
@@ -215,7 +219,6 @@ public class LPEntomologo implements LPIEntomologo {
                 return;
             }
 
-            // Eliminar el alimento de la base de datos
             alimentoDAO.delete(alimentoAEliminar.getIdAlimentoTipo());
 
             System.out.println(azul + "[Preparado y eliminado]: " + tipoAlimento);
@@ -235,10 +238,8 @@ public class LPEntomologo implements LPIEntomologo {
         }
 
         try {
-            // Preparar el alimento (lo elimina de la BD)
             LPPreparaAlimento(alimento);
 
-            // Validar que el alimento sea "Nectarívoros" (solo pueden comer néctar)
             if (alimento.equals("Nectarívoros")) {
                 System.out.println("La hormiga fue alimentada correctamente con " + alimento);
                 System.out.println("La hormiga SOBREVIVE");
@@ -247,7 +248,7 @@ public class LPEntomologo implements LPIEntomologo {
                 System.out.println("La hormiga necesita Nectarívoros, pero recibió: " + alimento);
                 System.out.println("La hormiga MUERE");
                 LPeliminarHormigaMuerta(hormiga);
-                return null; // La hormiga muere
+                return null;
             }
         } catch (LPAppException e) {
             System.out.println("Error al alimentar hormiga: " + e.getMessage());
@@ -255,7 +256,6 @@ public class LPEntomologo implements LPIEntomologo {
         }
     }
 
-    // refactor
     public void LPeliminarHormigaMuerta(LPHormiga hormiga) {
         if (hormiga == null || hormiga.data == null || hormiga.data.getIdHormiga() == null) {
             System.out.println("No se puede eliminar: Hormiga sin ID válido");
@@ -266,7 +266,6 @@ public class LPEntomologo implements LPIEntomologo {
             LPHormigaDAO hormigaDAO = new LPHormigaDAO();
             Integer hormigaId = hormiga.data.getIdHormiga();
 
-            // Eliminar de la base de datos pasando el ID
             hormigaDAO.delete(hormigaId);
 
             System.out.println("La hormiga ha sido eliminada de la base de datos");

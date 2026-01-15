@@ -15,17 +15,17 @@ CREATE TABLE
     LPAlimentoTipo (
         IdAlimentoTipo INTEGER PRIMARY KEY AUTOINCREMENT,
         Nombre VARCHAR(15) NOT NULL UNIQUE,
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 CREATE TABLE
     LPAlimento (
         IdAlimento INTEGER PRIMARY KEY AUTOINCREMENT,
         IdAlimentoTipo INTEGER NOT NULL REFERENCES LPAlimentoTipo (IdAlimentoTipo),
-        Nombre VARCHAR(15) NOT NULL UNIQUE,
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        Nombre VARCHAR(15) NOT NULL,
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 CREATE TABLE
@@ -33,8 +33,8 @@ CREATE TABLE
         IdHormigaTipo INTEGER PRIMARY KEY AUTOINCREMENT,
         Nombre VARCHAR(15) NOT NULL UNIQUE,
         Estado VARCHAR(1) NOT NULL DEFAULT 'A',
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 CREATE TABLE
@@ -42,16 +42,16 @@ CREATE TABLE
         IdEstado INTEGER PRIMARY KEY AUTOINCREMENT,
         Nombre VARCHAR(15) NOT NULL UNIQUE,
         Descripcion VARCHAR(100) NULL,
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 CREATE TABLE
     LPSexo (
         IdSexo INTEGER PRIMARY KEY AUTOINCREMENT,
         Nombre VARCHAR(15) NOT NULL UNIQUE,
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 CREATE TABLE
@@ -60,10 +60,10 @@ CREATE TABLE
         IdHormigaTipo INTEGER NOT NULL REFERENCES LPHormigaTipo (IdHormigaTipo),
         IdSexo INTEGER NOT NULL REFERENCES LPSexo (IdSexo),
         IdEstado INTEGER NOT NULL REFERENCES LPEstado (IdEstado),
-        Nombre VARCHAR(20) NOT NULL UNIQUE,
+        Nombre VARCHAR(20) NOT NULL,
         Estado VARCHAR(1) NOT NULL DEFAULT 'A',
-        FechaCreacion DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime')),
-        FechaModifica DATETIME NOT NULL DEFAULT (datetime ('now', 'localtime'))
+        FechaCreacion DATETIME NOT NULL DEFAULT (datetime('now', 'localtime')),
+        FechaModifica DATETIME NOT NULL DEFAULT (datetime('now', 'localtime'))
     );
 
 INSERT INTO
